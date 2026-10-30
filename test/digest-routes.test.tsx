@@ -47,6 +47,23 @@ describe('GET /digest/:night', () => {
     expect(html).toContain('—');
   });
 
+  it('shows first and last time as written in the log, offset kept', async () => {
+    const dir = tempRuns({ '2026-10-30.jsonl': BAD_NIGHT_LINES });
+    const html = await (await createApp(configFor(dir)).request('/digest/2026-10-30')).text();
+    expect(html).toContain('<th>first</th>');
+    expect(html).toContain('<th>last</th>');
+    expect(html).toContain('2026-10-30T01:00:00+01:00');
+    expect(html).toContain('2026-10-30T01:05:00+01:00');
+  });
+
+  it('shows fixtures/refresh on 2026-10-28 with its times and most recent error', async () => {
+    // Reads runs/ without writing to it.
+    const html = await (await createApp(configFor('runs')).request('/digest/2026-10-28')).text();
+    expect(html).toContain('2026-10-29T01:30:00+01:00');
+    expect(html).toContain('2026-10-29T01:37:00+01:00');
+    expect(html).toContain('upstream 503');
+  });
+
   it('returns 404 for a night with no file', async () => {
     const dir = tempRuns({});
     const res = await createApp(configFor(dir)).request('/digest/2026-01-01');

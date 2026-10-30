@@ -1,5 +1,6 @@
 // Plan morning-digest § 1. One row per job in runs/<night>.jsonl. Times stay as written in the
-// log, offset included. `owner` stays null here; views show it as `—`.
+// log, offset included. `owner` stays null here; views show it as `—`. lastStatus is the latest
+// line's; lastError is the latest error the job logged (null if it never logged one).
 export type Status = 'ok' | 'retry' | 'fail';
 
 export type DigestRow = {

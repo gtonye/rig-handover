@@ -1,5 +1,6 @@
 import type { Night } from '../digest/types.js';
 
+// Times are shown as written in the log, offset kept (styleguide).
 // A row is marked .warn when it retried 3+ times or its last run failed.
 function warn(row: Night['rows'][number]): boolean {
   return row.retries >= 3 || row.lastStatus === 'fail';
@@ -21,6 +22,8 @@ export function Digest({ night }: { night: Night }) {
               <th>retries</th>
               <th>last status</th>
               <th>last error</th>
+              <th>first</th>
+              <th>last</th>
             </tr>
           </thead>
           <tbody>
@@ -32,6 +35,8 @@ export function Digest({ night }: { night: Night }) {
                 <td>{row.retries}</td>
                 <td>{row.lastStatus}</td>
                 <td>{row.lastError ?? '—'}</td>
+                <td>{row.firstAt}</td>
+                <td>{row.lastAt}</td>
               </tr>
             ))}
           </tbody>

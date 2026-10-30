@@ -33,12 +33,17 @@ describe('readNight', () => {
       runs: 4,
       retries: 3,
       lastStatus: 'ok',
-      lastError: null,
+      lastError: 'upstream 503',
       firstAt: '2026-10-29T01:30:00+01:00',
       lastAt: '2026-10-29T01:37:00+01:00',
     });
     expect(rows.find((r) => r.job === 'notes/backup')).toMatchObject({ lastStatus: 'fail', lastError: 'quota exceeded' });
     expect(rows.find((r) => r.job === 'lane/sync')).toMatchObject({ runs: 8, retries: 1, lastStatus: 'ok' });
+  });
+
+  it('keeps lastError null for a job that never logged an error', () => {
+    const rows = readNight('runs', '2026-10-28')?.rows ?? [];
+    expect(rows.find((r) => r.job === 'rig/rotate-logs')?.lastError).toBeNull();
   });
 
   it('keeps a row whose owner is null', () => {

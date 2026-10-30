@@ -22,6 +22,7 @@ function parseLine(text: string): Line | null {
 }
 
 // Lines are in log order, so the job's first line is first and its latest line is last.
+// lastError is the most recent error the job logged, even if a later line was clean.
 export const readNight: ReadNight = (runsDir, night) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(night)) return null;
   let text: string;
@@ -48,7 +49,7 @@ export const readNight: ReadNight = (runsDir, night) => {
       runs: (row?.runs ?? 0) + 1,
       retries: (row?.retries ?? 0) + (line.status === 'retry' ? 1 : 0),
       lastStatus: line.status,
-      lastError: line.error,
+      lastError: line.error ?? row?.lastError ?? null,
       firstAt: row?.firstAt ?? line.at,
       lastAt: line.at,
     });
